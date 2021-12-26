@@ -1,0 +1,40 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--    <script src="https://cdn.tailwindcss.com"></script>-->
+    <script defer="" src="https://unpkg.com/alpinejs@3.7.0/dist/cdn.min.js"></script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('todos', {
+                    todo: ['walk dog', 'buy milk'],
+                    current: '',
+                    add() {
+                        this.todo.push(this.current)
+                    }
+                }
+            )
+        })
+    </script>
+</head>
+<body>
+<h1 class="text-3xl font-bold">
+    To do list
+</h1>
+<div class="group ">
+    <ul x-data>
+        <template x-for="todo_item in $store.todos.todo">
+            <li x-text="todo_item"></li>
+        </template>
+    </ul>
+</div>
+<div x-data>
+    <input type="text" x-model="$store.todos.current">
+    <button @click="$store.todos.add()">add new</button>
+</div>
+</body>
+
+</html>
