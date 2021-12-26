@@ -8,22 +8,36 @@
     <!--    <script src="https://cdn.tailwindcss.com"></script>-->
     <script defer="" src="https://unpkg.com/alpinejs@3.7.0/dist/cdn.min.js"></script>
     <script>
+        class TodoItem {
+            id = 0
+            label = ''
+            sublist = []
+
+            constructor(id, label) {
+                this.id = id
+                this.label = label
+            }
+
+            addSubItem(x) {
+                this.sublist.push(x)
+            }
+        }
+
         document.addEventListener('alpine:init', () => {
             Alpine.store('todos', {
                     subitem: 'XX',
                     todo:
                         [
-                            {id: 1, label: 'walk dog', sublist: ['first bit', 'second part', 'finale']},
-                            {id: 2, label: 'buy milk', sublist: ['first bit', 'second part', 'finale']},
-                            {id: 3, label: 'make cake', sublist: ['first bit', 'second part', 'finale']},
+                            new TodoItem(1, 'Walk the dog'),
+                            new TodoItem(2, 'Buy milk'),
+                            new TodoItem(3, 'Make a cake'),
                         ],
                     current: '',
                     add() {
-                        this.todo.push({id: this.todo.length + 1, label: this.current, sublist: []})
+                        this.todo.push(new TodoItem(this.todo.length + 1, this.current))
                     },
                     addsubitem(target_obj, x) {
-                        console.log(target_obj, x)
-                        target_obj.sublist.push(x)
+                        target_obj.addSubItem(new TodoItem(target_obj.sublist.length + 1, x))
                     }
                 }
             )
@@ -40,13 +54,13 @@
             <li>
                 <span x-text="todo_item.label"></span>
                 <span x-data="{ subitem: '' }">
-                    <input x-model="subitem" type="text">
-                    <button @click="$store.todos.addsubitem(todo_item, subitem)">add sub item</button>
                     <ul>
                         <template x-for="subitem in todo_item.sublist">
-                            <li x-text="subitem"></li>
+                            <li x-text="subitem.label"></li>
                         </template>
                     </ul>
+                    <input x-model="subitem" type="text">
+                    <button @click="$store.todos.addsubitem(todo_item, subitem)">add sub item</button>
                 </span>
             </li>
         </template>
