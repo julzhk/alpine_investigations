@@ -1,0 +1,76 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer="" src="https://unpkg.com/alpinejs@3.7.0/dist/cdn.min.js"></script>
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('tempCalc', {
+          c: 0,
+          setK() {
+            this.c = this.convertk_c(this.k)
+          },
+          setC() {
+            this.k = this.convertc_k(this.c)
+            this.f = this.convertc_f(this.c)
+          },
+          setF() {
+            this.c = this.convertf_c(this.f)
+          },
+          convertk_c(k) {
+            return Math.round(k - 273.15)
+          },
+          convertc_k(c) {
+            return Math.round(c + 273.15)
+          },
+          convertc_f(c) {
+            return Math.round((c * 9 / 5) + 32)
+          },
+          convertf_c(f) {
+            return Math.round((f - 32) * (5 / 9))
+          },
+        }
+      )
+    })
+  </script>
+</head>
+<body>
+<h1 class="text-3xl font-bold">
+    Temperature converter
+  </h1>
+<div class="group ">
+centigrade<input x-data type="number"
+        x-model.number="$store.tempCalc.c"
+        x-effect="$store.tempCalc.setC()"
+        class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+      focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+      invalid:border-pink-500 invalid:text-pink-600"
+/>
+kelvin <input x-data type="number"
+         x-model.number="$store.tempCalc.k"
+         x-effect="$store.tempCalc.setK()"
+         class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+      focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+      disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none
+      invalid:border-pink-500 invalid:text-pink-600
+"
+/>
+Farenheit <input x-data type="number"
+         x-model.number="$store.tempCalc.f"
+         x-effect="$store.tempCalc.setF()"
+         class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+      focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500
+      disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none
+      invalid:border-pink-500 invalid:text-pink-600
+"
+/>
+
+<input x-data type="range" x-model.number="$store.tempCalc.k" min="0" max="600" step="25">
+
+</body>
+
+</html>
