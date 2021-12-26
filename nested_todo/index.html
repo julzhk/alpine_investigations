@@ -10,10 +10,19 @@
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.store('todos', {
-                    todo: ['walk dog', 'buy milk'],
+                    subitem: 'XX',
+                    todo:
+                        [
+                            {id: 1, label: 'walk dog'},
+                            {id: 2, label: 'buy milk'},
+                            {id: 3, label: 'make cake'},
+                        ],
                     current: '',
                     add() {
-                        this.todo.push(this.current)
+                        this.todo.push({id: this.todo.length + 1, label: this.current})
+                    },
+                    addsubitem(x) {
+                        console.log(x)
                     }
                 }
             )
@@ -27,7 +36,13 @@
 <div class="group ">
     <ul x-data>
         <template x-for="todo_item in $store.todos.todo">
-            <li x-text="todo_item"></li>
+            <li>
+                <span x-text="todo_item.label"></span>
+                <span x-data="{ subitem: '' }">
+                    <input x-model="subitem" type="text">
+                    <button @click="$store.todos.addsubitem(subitem)">add sub item</button>
+                </span>
+            </li>
         </template>
     </ul>
 </div>
