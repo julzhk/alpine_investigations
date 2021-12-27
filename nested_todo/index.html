@@ -4,13 +4,19 @@
 <head>
     <meta charset="utf-8">
     <title></title>
+    <style>
+        .done {
+            text-decoration: line-through;
+            color: royalblue;
+        }
+    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--    <script src="https://cdn.tailwindcss.com"></script>-->
     <script defer="" src="https://unpkg.com/alpinejs@3.7.0/dist/cdn.min.js"></script>
     <script>
         class TodoItem {
             id = 0
             label = ''
+            complete = false
             sublist = []
 
             constructor(id, label) {
@@ -21,18 +27,22 @@
             addSubItem(x) {
                 this.sublist.push(x)
             }
+
+            complete_toggle() {
+                this.complete = !this.complete
+            }
         }
 
         document.addEventListener('alpine:init', () => {
             Alpine.store('todos', {
-                    subitem: 'XX',
+                    subitem: '',
+                    current: '',
                     todo:
                         [
                             new TodoItem(1, 'Walk the dog'),
                             new TodoItem(2, 'Buy milk'),
                             new TodoItem(3, 'Make a cake'),
                         ],
-                    current: '',
                     add() {
                         this.todo.push(new TodoItem(this.todo.length + 1, this.current))
                     },
@@ -52,11 +62,15 @@
     <ul x-data>
         <template x-for="todo_item in $store.todos.todo">
             <li>
-                <span x-text="todo_item.label"></span>
+                <span :class="{'done':todo_item.complete }" x-text="todo_item.label"></span>
+                <button @click="todo_item.complete_toggle()">Done</button>
                 <span x-data="{ subitem: '' }">
                     <ul>
                         <template x-for="subitem in todo_item.sublist">
-                            <li x-text="subitem.label"></li>
+                            <span>
+                                <li :class="{'done':subitem.complete }" x-text="subitem.label"></li>
+                                <button @click="subitem.complete_toggle()">Done</button>
+                            </span>
                         </template>
                     </ul>
                     <input x-model="subitem" type="text">
