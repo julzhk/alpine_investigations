@@ -1,0 +1,113 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+        ul {
+            -webkit-column-count: 3;
+            -moz-column-count: 3;
+            column-count: 3;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script defer="" src="https://unpkg.com/alpinejs@3.7.0/dist/cdn.min.js"></script>
+    <script>
+        class Square {
+            label = ''
+
+            select(owner) {
+                this.label = owner
+            }
+
+            is_empty() {
+                return !(typeof this.label == "boolean")
+            }
+
+            get_label() {
+                if (!this.is_empty()) {
+                    return this.label ? 'x' : 'o'
+                }
+                return '□'
+            }
+        }
+
+        generate_board = () => {
+            let r = []
+            for (let i = 0; i < 9; i++) {
+                r.push(new Square())
+            }
+            return r
+        }
+
+        document
+            .addEventListener(
+                'alpine:init'
+                , () => {
+                    Alpine
+                        .store(
+                            'board', {
+                                turn: true,
+                                board: generate_board(),
+                                next_turn() {
+                                    this.turn = !this.turn
+                                },
+                                select(item) {
+                                    if (item.is_empty()) {
+                                        item.select(this.turn)
+                                        this.next_turn()
+                                        this.opponent_turn()
+                                    }
+                                },
+                                get_empty_spaces() {
+                                    return this.board.filter(x => x.is_empty())
+                                },
+                                is_game_over() {
+                                    return !Boolean(this.get_empty_spaces().length)
+                                },
+                                select_computer_move: function (spaces_left) {
+                                    return Math.floor(Math.random() * spaces_left);
+                                },
+                                opponent_turn() {
+                                    empty_space = this.get_empty_spaces()
+                                    let spaces_left = empty_space.length
+                                    if (!this.is_game_over()) {
+                                        let ele = this.select_computer_move(spaces_left);
+                                        empty_space[ele].select(false)
+                                        this.next_turn()
+                                    } else {
+                                        console.log('game over')
+                                    }
+                                },
+                                xxopponent_turn() {
+                                    console.log(ele)
+                                    let ele = Math.floor(Math.random() * spaces_left);
+                                    randomElement = this.board[ele]
+                                    this.select(randomElement)
+                                    this.next_turn()
+                                }
+                            }
+                        )
+                })
+    </script>
+</head>
+<body>
+<h1 class="text-3xl font-bold">
+    Tic tac toe
+</h1>
+<div class="group ">
+    <ul x-data>
+        <template x-for="item in $store.board.board">
+            <li>
+                <span @click="$store.board.select(item)" x-text="item.get_label()"></span>
+            </li>
+        </template>
+    </ul>
+</div>
+<div x-data x-show="$store.board.is_game_over()" x-transition>
+    Game over!
+</div>
+</body>
+
+</html>
