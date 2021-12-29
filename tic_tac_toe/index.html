@@ -3,7 +3,16 @@
 <head>
     <meta charset="utf-8">
     <title>Tic tac toe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+
+    </style>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+        }
         ul {
             -webkit-column-count: 3;
             -moz-column-count: 3;
@@ -12,6 +21,18 @@
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script defer="" src="https://unpkg.com/alpinejs@3.7.0/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        clifford: '#da373d',
+                    }
+                }
+            }
+        }
+    </script>
     <script>
         class Square {
             label = ''
@@ -61,10 +82,39 @@
                         is_game_over() {
                             return !Boolean(this.get_empty_spaces().length)
                         },
+                        winner() {
+                            winner_list = []
+                            arr = this.board.filter(x => x.label)
+                            lines = [
+                                [arr[0], arr[1], arr[2]],
+                                [arr[3], arr[4], arr[5]],
+                                [arr[6], arr[7], arr[8]],
+                            ]
+                            winner = lines.map((arr) => {
+                                if (arr.every(v => v === arr[0])) {
+                                    winner_list.push(arr[0])
+                                }
+                            })
+                            if (winner_list.some((element) => element === true)) {
+                                return true
+                            }
+                            if (winner_list.some((element) => element === false)) {
+                                return false
+                            }
+                        },
+                        x_winner() {
+                            if (this.winner() === false) {
+                                return true
+                            }
+                        },
+                        o_winner() {
+                            if (this.winner() === true) {
+                                return true
+                            }
+                        },
                         select_computer_move: function () {
                             empty_space = this.get_empty_spaces()
                             let spaces_left = empty_space.length
-
                             return Math.floor(Math.random() * spaces_left);
                         },
                         opponent_turn() {
@@ -84,20 +134,29 @@
     </script>
 </head>
 <body>
-<h1>
+<h1 class="text-3xl font-bold text-clifford">
     Tic tac toe
 </h1>
 <div class="group ">
     <ul x-data>
         <template x-for="item in $store.board.board">
-            <li>
-                <span @click="$store.board.select(item)" x-text="item.get_label()"></span>
+            <li @click="$store.board.select(item)"
+                class="hover:bg-blue-100 p-6 max-w-sm mx-auto bg-white
+                        rounded-xl p-6 m-6 shadow-lg
+                        flex items-center space-x-4">
+                <span x-text="item.get_label()"></span>
             </li>
         </template>
     </ul>
 </div>
 <div x-data x-show="$store.board.is_game_over()" x-transition>
     Game over!
+    <div x-data x-show="$store.board.x_winner()" x-transition>
+        X wins!
+    </div>
+    <div x-data x-show="$store.board.o_winner()" x-transition>
+        O wins!
+    </div>
 </div>
 </body>
 </html>
