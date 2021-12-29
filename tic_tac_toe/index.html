@@ -1,9 +1,8 @@
 <!doctype html>
 <html class="no-js" lang="">
-
 <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Tic tac toe</title>
     <style>
         ul {
             -webkit-column-count: 3;
@@ -41,59 +40,49 @@
             return r
         }
 
-        document
-            .addEventListener(
-                'alpine:init'
-                , () => {
-                    Alpine
-                        .store(
-                            'board', {
-                                turn: true,
-                                board: generate_board(),
-                                next_turn() {
-                                    this.turn = !this.turn
-                                },
-                                select(item) {
-                                    if (item.is_empty()) {
-                                        item.select(this.turn)
-                                        this.next_turn()
-                                        this.opponent_turn()
-                                    }
-                                },
-                                get_empty_spaces() {
-                                    return this.board.filter(x => x.is_empty())
-                                },
-                                is_game_over() {
-                                    return !Boolean(this.get_empty_spaces().length)
-                                },
-                                select_computer_move: function (spaces_left) {
-                                    return Math.floor(Math.random() * spaces_left);
-                                },
-                                opponent_turn() {
-                                    empty_space = this.get_empty_spaces()
-                                    let spaces_left = empty_space.length
-                                    if (!this.is_game_over()) {
-                                        let ele = this.select_computer_move(spaces_left);
-                                        empty_space[ele].select(false)
-                                        this.next_turn()
-                                    } else {
-                                        console.log('game over')
-                                    }
-                                },
-                                xxopponent_turn() {
-                                    console.log(ele)
-                                    let ele = Math.floor(Math.random() * spaces_left);
-                                    randomElement = this.board[ele]
-                                    this.select(randomElement)
-                                    this.next_turn()
-                                }
+        document.addEventListener(
+            'alpine:init', () => {
+                Alpine.store(
+                    'board', {
+                        turn: true,
+                        board: generate_board(),
+                        next_turn() {
+                            this.turn = !this.turn
+                        },
+                        select(item) {
+                            if (item.is_empty()) {
+                                item.select(this.turn)
+                                this.next_turn()
+                                this.opponent_turn()
                             }
-                        )
-                })
+                        },
+                        get_empty_spaces() {
+                            return this.board.filter(x => x.is_empty())
+                        },
+                        is_game_over() {
+                            return !Boolean(this.get_empty_spaces().length)
+                        },
+                        select_computer_move: function (spaces_left) {
+                            return Math.floor(Math.random() * spaces_left);
+                        },
+                        opponent_turn() {
+                            empty_space = this.get_empty_spaces()
+                            let spaces_left = empty_space.length
+                            if (!this.is_game_over()) {
+                                let ele = this.select_computer_move(spaces_left);
+                                empty_space[ele].select(false)
+                                this.next_turn()
+                            } else {
+                                console.log('game over')
+                            }
+                        }
+                    }
+                )
+            })
     </script>
 </head>
 <body>
-<h1 class="text-3xl font-bold">
+<h1>
     Tic tac toe
 </h1>
 <div class="group ">
@@ -109,5 +98,4 @@
     Game over!
 </div>
 </body>
-
 </html>
