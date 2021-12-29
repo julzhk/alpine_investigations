@@ -42,8 +42,7 @@
 
         document.addEventListener(
             'alpine:init', () => {
-                Alpine.store(
-                    'board', {
+                Alpine.store('board', {
                         turn: true,
                         board: generate_board(),
                         next_turn() {
@@ -62,14 +61,17 @@
                         is_game_over() {
                             return !Boolean(this.get_empty_spaces().length)
                         },
-                        select_computer_move: function (spaces_left) {
+                        select_computer_move: function () {
+                            empty_space = this.get_empty_spaces()
+                            let spaces_left = empty_space.length
+
                             return Math.floor(Math.random() * spaces_left);
                         },
                         opponent_turn() {
                             empty_space = this.get_empty_spaces()
                             let spaces_left = empty_space.length
                             if (!this.is_game_over()) {
-                                let ele = this.select_computer_move(spaces_left);
+                                let ele = this.select_computer_move();
                                 empty_space[ele].select(false)
                                 this.next_turn()
                             } else {
